@@ -1,6 +1,8 @@
 const extractUrls = require('./extracter');
 const amqp = require('amqplib/callback_api');
 const { sendToQueue } = require("./producer");
+const fs = require('fs');
+const url = require('url');
 
 let exploredSet = new Set();
 let isProcessing = false;
@@ -50,6 +52,7 @@ async function processURL(url, channel, primaryDomain) {
 
     // console.log("going to extract", url);
     exploredSet.add(url);
+    saveUrls(url, primaryDomain)
     isProcessing = true;
 
     const urls = await extractUrls(url, primaryDomain);
@@ -62,4 +65,22 @@ async function processURL(url, channel, primaryDomain) {
     console.log('Total Unique Extracted URL:', exploredSet.size);
     // console.log('Total Unique Extracted URL:', exploredSet);
     isProcessing = false;
+}
+
+function saveUrls(text, primaryDomain) {
+
+    const url = new URL(primaryDomain);
+    let filename = url.hostname;
+
+    // File path where you want to write the text
+    const filePath = +"" + filename + '_.txt';
+
+    // Write the text to the file
+    fs.writeFile(filePath, text + '\n', { flag: 'a+' }, (err) => {
+        if (err) {
+            console.error('Error writing to file:', err);
+        } else {
+            // console.log('Text has been written to file successfully.');
+        }
+    });
 }

@@ -25,6 +25,7 @@ async function extractUrls(targetUrl, primaryDomain) {
             const href = $(element).attr('href');
             if (href && href.trim() !== '') {
                 let absoluteUrl;
+                /// console.log(href)
                 if (href.startsWith('http')) {
                     // If it's an absolute URL, use it as is
                     absoluteUrl = href;
@@ -47,10 +48,12 @@ async function extractUrls(targetUrl, primaryDomain) {
         });
 
         // Remove duplicates from the URLs
-        const uniqueUrls = removeDuplicates(urls);
+        const filteredUrls = urls.filter(u => !u.includes("#")); // Filter URLs
+
+        const uniqueUrls = removeDuplicates(filteredUrls);
         return uniqueUrls;
     } catch (error) {
-        console.error('Error extracting URLs:', error);
+        // console.error('Error extracting URLs:', error);
         return [];
     }
 }

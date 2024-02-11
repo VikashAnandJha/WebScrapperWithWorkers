@@ -2,7 +2,7 @@ const { sendToQueue } = require("./producer")
 const extractUrls = require('./extracter');
 
 
-const url = 'https://supremetechnologiesindia.com';
+const url = 'https://roz11.com';
 //https://supremetechnologiesindia.com/
 
 sendToQueue(url, getBaseUrl(url));
