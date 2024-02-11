@@ -1,6 +1,7 @@
 var amqp = require('amqplib/callback_api');
 
 var connection; // Variable to hold the connection
+var channel; // Variable to hold the channel
 
 // Function to initialize connection if not already initialized
 function initializeConnection(callback) {
@@ -17,19 +18,33 @@ function initializeConnection(callback) {
     }
 }
 
-function sendToQueue(msg) {
-    var queue = 'hello';
-    initializeConnection(function (conn) {
-        conn.createChannel(function (error1, channel) {
-            if (error1) {
-                throw error1;
-            }
-            channel.assertQueue(queue, {
-                durable: false
+// Function to initialize channel if not already initialized
+function initializeChannel(callback) {
+    if (channel) {
+        callback(channel);
+    } else {
+        initializeConnection(function (conn) {
+            conn.createChannel(function (error1, ch) {
+                if (error1) {
+                    throw error1;
+                }
+                channel = ch; // Store the channel
+                callback(channel);
             });
-            channel.sendToQueue(queue, Buffer.from(msg));
-            console.log(" [x] Sent %s", msg);
         });
+    }
+}
+
+function sendToQueue(msg, primaryDomain) {
+    var queue = 'web';
+    initializeChannel(function (ch) {
+        ch.assertQueue(queue, {
+            durable: false
+        });
+
+        let data = JSON.stringify({ url: msg, primaryDomain });
+        ch.sendToQueue(queue, Buffer.from(data));
+        console.log(" [x] Sent %s", msg);
     });
 }
 
