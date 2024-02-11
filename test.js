@@ -1,12 +1,19 @@
 const { sendToQueue } = require("./producer")
 const extractUrls = require('./extracter');
 
+const URL = require('./db/Schema')
+const connect = require('./db/conn')
+// connect("mongodb+srv://vikashjha:jhajha22@brollet.168kf.mongodb.net/testUnmiss").then(() => {
 
-const url = 'https://www.konstantinfo.com/';
+//     URL.findOne({ url: "test.com" }).then((doc) => console.log(doc))
+
+// })
+const url = 'https://www.apple.com';
 //https://supremetechnologiesindia.com/
-
-sendToQueue(url, getBaseUrl(url));
-// extractUrls(url)
+let primaryDomain = getBaseUrl(url)
+console.log(primaryDomain)
+sendToQueue(url, primaryDomain);
+// extractUrls(url, getBaseUrl(url))
 //     .then(urls => {
 //         console.log('Extracted URLs:', urls);
 //         console.log('total Extracted URLs:', urls.length);
@@ -23,3 +30,16 @@ function getBaseUrl(url) {
     }
     return null; // Unable to extract base URL
 }
+function getDomainName(url) {
+    // Remove protocol (http, https, ftp) and get the rest
+    let domain = url.replace(/(^\w+:|^)\/\//, '');
+
+    // Get domain name without path and query parameters
+    domain = domain.split('/')[0];
+
+    // Handle 'www' prefix if present
+    domain = domain.replace(/^www\./, '');
+
+    return domain;
+}
+

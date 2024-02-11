@@ -53,7 +53,7 @@ async function extractUrls(targetUrl, primaryDomain) {
         const uniqueUrls = removeDuplicates(filteredUrls);
         return uniqueUrls;
     } catch (error) {
-        // console.error('Error extracting URLs:', error);
+        ///console.error('Error extracting URLs:', error);
         return [];
     }
 }
