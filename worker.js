@@ -25,6 +25,8 @@ amqp.connect('amqp://localhost', function (error0, connection) {
 
 
         channel.consume(queue, function (msg) {
+
+
             // console.log(" [x] Received %s", msg.content.toString());
             let data = JSON.parse(msg.content.toString());
             let url = data.url;
@@ -73,7 +75,7 @@ function saveUrls(text, primaryDomain) {
     let filename = url.hostname;
 
     // File path where you want to write the text
-    const filePath = +"" + filename + '_.txt';
+    const filePath = "./data/" + filename + '_.txt';
 
     // Write the text to the file
     fs.writeFile(filePath, text + '\n', { flag: 'a+' }, (err) => {
